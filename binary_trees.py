@@ -8,6 +8,7 @@ class Node:
         self.rightNode = rightNode
         self.n = n # number of nodes below the node including itself
 
+
     def find_node(self, value):
         # if u find what u were looking for
         if self.value == value:
@@ -73,7 +74,7 @@ class Node:
         # cases where there are children in both the directions
         # swap values between currentNode and its succesorNode
         # delete the successor_node(which contains the value to be removed from tree), note that the successor_node is a leaf
-        successor_node = self.rightNode.find_max_in_sub_tree()
+        successor_node = self.rightNode.find_min_in_sub_tree()
         successor_node.value, self.value = self.value, successor_node.value
         successor_node.delete()
         
@@ -176,8 +177,33 @@ class BST:
             parent = node.parent
             while parent.value < value:
                 parent = parent.parent
+                if parent == None: # to avoid error of "value of none type at 2 lines above" due to root node
+                    break
             return parent
         
+    def print_all_in_order(self):
+        temp_root = self.root
+        while temp_root.leftNode != None:
+            temp_root = temp_root.leftNode
+        print(temp_root.value)
+        # the below code seems to have runtime n*log(n)
+        # n -> nodes and each time next successor -> log(n), (reason- worst case is reaching the leaves from node)
+
+        # but on doing amortized ananlysis
+        # instead of assuming worst case everytime, which is not practical
+        # we can look at the actual process
+        # in this case, it happens so that each edge in the tree is traversed twice
+        # if there are n nodes, there are n-1 edges
+        # 2(n-1) -> O(n) is the run time when analyzed properly
+        while temp_root != None and self.next_bigger(temp_root.value) != None:
+            print(self.next_bigger(temp_root.value).value)
+            if self.next_bigger(temp_root.value)!= None:
+                temp_root = self.next_bigger(temp_root.value)
+            else:
+                break
+            
+    
+    
     def find_max(self):
         return self.root.find_max_in_sub_tree()
 
@@ -204,6 +230,7 @@ tree.insert(79)
 tree.insert(64)
 tree.insert(83)
 
+tree.print_all_in_order()
 # tree.delete(79)
 # print(tree.find_node(83).leftNode.value) # 64
 
