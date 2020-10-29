@@ -78,7 +78,8 @@ def relax(node, delta):
     for n,dist in neighs.items():
         for q in queue:
             if q[0].name == n:
-                q[1] = delta + dist
+                if q[1]  > delta + dist:
+                    q[1] = delta + dist
     build_heap(queue, len(queue))
 
 # start relaxing from source vertex

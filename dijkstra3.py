@@ -95,7 +95,8 @@ class Graph:
             self.s[greedy_node.name] = greedy_node.distance_from_source
             # relax all the neighbours from greedy node
             for neigh in greedy_node.get_neighbours():
-                neigh[0].distance_from_source = greedy_node.distance_from_source + neigh[1]
+                if neigh[0].distance_from_source > greedy_node.distance_from_source + neigh[1]:
+                    neigh[0].distance_from_source = greedy_node.distance_from_source + neigh[1]
             # after relaxing heapify it as values are changed
             self.build_heap()
 
