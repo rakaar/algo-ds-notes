@@ -19,3 +19,5 @@
 18. [Dijkstra - Using arrays for queue, but inefficient code for relaxation](https://github.com/rakaar/algo-ds-notes/blob/master/dijkstra.py)
 19. [Dijkstra - Using Min Heaps for queue, but inefficient code for relaxation](https://github.com/rakaar/algo-ds-notes/blob/master/dijkstra2.py)
 20. [Dijkstra - Using Min Heaps for queue, better code for relaxation](https://github.com/rakaar/algo-ds-notes/blob/master/dijkstra3.py)
+21. [Bellman Ford Algo](https://github.com/rakaar/algo-ds-notes/blob/master/bellman-ford.py)
+22. [Shortest Path in a DAG with negative weights(no cycles)-faster than Dijkstra Algo](https://github.com/rakaar/algo-ds-notes/blob/master/dag_shortest_path_neg_weights.py)
