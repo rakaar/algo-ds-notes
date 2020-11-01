@@ -40,8 +40,7 @@ c.add_neighbours([(b,4), (d,8), (e,2)])
 d.add_neighbours([(e,7)])
 e.add_neighbours([(d,9)])
 
-# initializing the distance to itself 0 and others to infinity
-
+# testing if neighs added properly or not
 a.print_neighbours()
 c.print_neighbours()
 
