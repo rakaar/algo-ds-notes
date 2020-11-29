@@ -103,6 +103,7 @@ class Graph:
 
 graph =  Graph(source=a, queue=[a,b,c,d,e])
 graph.print_queue()
+graph.build_heap()
 graph.dijkstra()
 
 

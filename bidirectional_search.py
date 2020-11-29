@@ -8,6 +8,8 @@ class Node:
         self.backward_neighbours = backward_neighbours
         self.distance_from_source = distance_from_source
         self.distance_from_target = distance_from_target
+        self.forward_predecessor = None
+        self.backward_predecessor = None
 
     def add_neighbours(self, arr):
         self.neighbours = arr
@@ -56,9 +58,12 @@ class Graph:
         for i in self.queue:
             if i.name == self.source.name:
                 i.distance_from_source = 0
+                i.forward_predecessor = None
         for i in self.backward_queue:
             if i.name == self.target.name:
-                i.distance_from_source = 0
+                i.distance_from_target = 0
+                i.backward_predecessor = None
+        self.path_found = 0
 
     def print_queue(self):
         for i in self.queue:
@@ -89,10 +94,10 @@ class Graph:
         # lets assume that largest the arr[i] is the min heap only
         smallest = i
 
-        if left < n and self.backward_queue[left].distance_from_source < self.backward_queue[smallest].distance_from_source:
+        if left < n and self.backward_queue[left].distance_from_target < self.backward_queue[smallest].distance_from_target:
             smallest = left
         
-        if right < n and self.backward_queue[right].distance_from_source < self.backward_queue[smallest].distance_from_source:
+        if right < n and self.backward_queue[right].distance_from_target < self.backward_queue[smallest].distance_from_target:
             smallest = right
         
         # if our assumption that i index element is already max heap, swap and recurisvely call it
@@ -110,7 +115,7 @@ class Graph:
         n = len(self.backward_queue)
         start = n//2 - 1
         for i in range(start, -1, -1):
-            self.min_heapify(i)
+            self.min_heapify_backward_queue(i)
 
     def get_min_from_queue(self):
         length = len(self.queue)
@@ -129,30 +134,106 @@ class Graph:
     def dijkstra(self):
         while self.queue:
             greedy_node = self.get_min_from_queue()
+            print('FWD: greedy node ', greedy_node.name)
+            path = []
             if greedy_node.name in self.sb:
-                pass
-                # exit code
+                # make the path
+                path.append(self.source.name)
+                forward_path = []
+                current_node = greedy_node.forward_predecessor[0]
+                while current_node.forward_predecessor != None and current_node != None:
+                    forward_path.append(current_node.name)
+                    current_node = current_node.forward_predecessor[0]
+                forward_path.reverse()
+
+                path.extend(forward_path)
+
+                path.append(greedy_node.name)
+
+                current_node = greedy_node.backward_predecessor[0]
+                while current_node.backward_predecessor != None and current_node != None:
+                    path.append(current_node.name)
+                    current_node = current_node.backward_predecessor[0]
+                
+                path.append(self.target.name)
+
+                print('path is ',path)
+                self.path_found = 1
+                return
+                
             self.s[greedy_node.name] = greedy_node.distance_from_source
             # relax all the neighbours from greedy node
             for neigh in greedy_node.get_neighbours():
                 if neigh[0].distance_from_source > greedy_node.distance_from_source + neigh[1]:
+                    neigh[0].forward_predecessor = [greedy_node, greedy_node.distance_from_source + neigh[1]]
                     neigh[0].distance_from_source = greedy_node.distance_from_source + neigh[1]
             # after relaxing heapify it as values are changed
             self.build_heap()
+            return
 
     def backward_dijkstra(self):
         while self.backward_queue:
             greedy_node = self.get_min_from_backward_queue()
+            print('BKD: greedy node ', greedy_node.name)
+            path = []
             if greedy_node.name in self.s:
-                pass
-                # exit code
+                # make the path
+                path.append(self.source.name)
+                forward_path = []
+                current_node = greedy_node.forward_predecessor[0]
+                while current_node.forward_predecessor != None and current_node != None:
+                    forward_path.append(current_node.name)
+                    current_node = current_node.forward_predecessor[0]
+                forward_path.reverse()
+
+                path.extend(forward_path)
+
+                path.append(greedy_node.name)
+
+                current_node = greedy_node.backward_predecessor[0]
+                while current_node.backward_predecessor != None and current_node != None:
+                    path.append(current_node.name)
+                    current_node = current_node.backward_predecessor[0]
+                
+                path.append(self.target.name)
+
+                print('path is ',path)
+                self.path_found = 1
+                print('length of path ', greedy_node.distance_from_source + greedy_node.distance_from_target)
+                return
+
             self.sb[greedy_node.name] = greedy_node.distance_from_source
             # relax all neighbours from greedy node
             for neigh in greedy_node.get_backward_neighbours():
                 if neigh[0].distance_from_target > greedy_node.distance_from_target + neigh[1]:
+                    neigh[0].backward_predecessor = [greedy_node, greedy_node.distance_from_target + neigh[1]]
                     neigh[0].distance_from_target = greedy_node.distance_from_target + neigh[1]
             self.build_heap_backward_queue()
+            return
+
+    def bi_directional_dijkstra(self):
+        i = 0
+        while self.path_found == 0:
+            print('i val ',i)
+            if i % 2 == 0:
+                self.dijkstra()
+                i = i + 1
+                continue
+            else:
+                self.backward_dijkstra()
+                i = i + 1
+                continue
+        return
 
 graph =  Graph(source=a, target = e, queue=[a,b,c,d,e], backward_queue = [a,b,c,d,e])
 graph.print_queue()
-graph.dijkstra()
+graph.build_heap()
+graph.build_heap_backward_queue()
+graph.bi_directional_dijkstra()
+
+# remarks
+# this doesn't guarentee the shortest path
+# example in this case - shortest path is abce of length 9
+# but we got ade of length 10
+# the reason is quick termination it terminates as soon as node is in other frontier, without exploring other paths, and hence in this case the shorter path of ade was the answer
+# while the path abce remained unexplored
