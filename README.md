@@ -1,3 +1,6 @@
+# Resource
+[MIT-OCW 6006](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/)
+
 # algo-ds-notes
 1. [Find a peak in linear time](https://github.com/rakaar/algo-ds-notes/blob/master/linear_peak_find.py)
 2. [Binary Search](https://github.com/rakaar/algo-ds-notes/blob/master/binary_search.py)
